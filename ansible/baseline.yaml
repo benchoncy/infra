@@ -1,0 +1,34 @@
+---
+- name: General Baseline
+  hosts: all
+
+  handlers:
+    - name: Reboot
+      ansible.builtin.reboot:
+
+  tasks:
+    - name: Ansible user
+      become: yes
+      ansible.builtin.import_role:
+        name: ansible_user
+
+    - name: Security
+      become: yes
+      ansible.builtin.import_role: 
+        name: geerlingguy.security
+      vars:
+        security_ssh_allowed_users:
+          - ansible
+        security_autoupdate_enabled: false
+      notify: Reboot
+
+    - name: Install node exporter
+      become: yes
+      ansible.builtin.import_role: 
+        name: geerlingguy.node_exporter
+
+    - name: Set hostname
+      become: yes
+      ansible.builtin.hostname:
+        name: "{{ inventory_hostname }}"
+      notify: Reboot

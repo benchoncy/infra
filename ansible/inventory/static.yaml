@@ -1,0 +1,7 @@
+---
+raspberrypis:
+  hosts:
+    stargate:
+      ansible_host: stargate.local 
+  vars:
+    node_exporter_arch: armv7
