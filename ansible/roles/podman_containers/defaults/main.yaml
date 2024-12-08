@@ -1,0 +1,10 @@
+---
+# Global defaults
+podman_volume_root: /var/containers/
+
+# Node Exporter
+node_exporter_version: latest
+
+# Home Assistant
+home_assistant_version: 2024.12.1
+home_assistant_zigbee_device: /dev/ttyUSB0

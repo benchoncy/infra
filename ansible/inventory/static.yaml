@@ -1,7 +1,14 @@
 ---
-raspberrypis:
+all:
   hosts:
-    stargate:
-      ansible_host: stargate.local 
-  vars:
-    node_exporter_arch: armv7
+    dalaran:
+
+immutable:
+  hosts:
+    dalaran:
+
+podman:
+  hosts:
+    dalaran:
+      podman_containers:
+        - home_assistant

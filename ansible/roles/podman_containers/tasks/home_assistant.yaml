@@ -1,0 +1,51 @@
+---
+- name: Provision space for home assistant
+  become: true
+  ansible.builtin.file:
+    state: directory
+    path: "{{ podman_volume_root }}/home-assistant/"
+    mode: '0755'
+    owner: "{{ ansible_user }}"
+  register: home_assistant_volume
+
+- name: Create home assistant quadlet
+  containers.podman.podman_container:
+    name: home-assistant
+    image: ghcr.io/home-assistant/home-assistant:{{ home_assistant_version }}
+    state: quadlet
+    privileged: true
+    group_add:
+      - keep-groups
+    quadlet_options:
+      - |
+        [Service]
+        Restart=always
+      - |
+        [Install]
+        WantedBy=multi-user.target
+    device: "{{ home_assistant_zigbee_device }}:{{ home_assistant_zigbee_device }}:rwm" # For Zigbee
+    volumes:
+      - "{{ home_assistant_volume.path }}:/config:Z"
+    ports:
+      - 8123:8123
+    cap_add:
+      - CAP_NET_RAW # For network scanning
+    env:
+      TZ: Europe/Dublin
+  notify: Restart home-assistant
+
+- name: Enable home assistant service
+  ansible.builtin.systemd:
+    name: home-assistant
+    state: started
+    enabled: true
+    daemon_reload: true
+    scope: user
+
+- name: Allow home assistant through firewall
+  become: true
+  ansible.posix.firewalld:
+    port: 8123/tcp
+    permanent: true
+    immediate: true
+    state: enabled

@@ -4,31 +4,48 @@
 
   handlers:
     - name: Reboot
+      become: true
       ansible.builtin.reboot:
+      vars:
+        ansible_user: ansible
 
   tasks:
-    - name: Ansible user
-      become: yes
+    - name: Ansible provisioner user
+      become: true
       ansible.builtin.import_role:
         name: ansible_user
 
-    - name: Security
-      become: yes
+    - name: Lockdown SSH
+      become: true
       ansible.builtin.import_role: 
         name: geerlingguy.security
       vars:
         security_ssh_allowed_users:
           - ansible
+        security_fail2ban_enabled: false
         security_autoupdate_enabled: false
       notify: Reboot
 
-    - name: Install node exporter
-      become: yes
+    - name: Install node exporter (immutable)
+      ansible.builtin.import_role: 
+        name: podman_containers
+        tasks_from: node_exporter.yaml
+      when: inventory_hostname in groups['immutable']
+
+    - name: Install node exporter (mutable)
+      become: true
       ansible.builtin.import_role: 
         name: geerlingguy.node_exporter
+      when: inventory_hostname not in groups['immutable']
+
+    - name: Set timezone to Europe/Dublin
+      become: true
+      ansible.builtin.timezone:
+        name: Europe/Dublin
+      notify: Reboot
 
     - name: Set hostname
-      become: yes
+      become: true
       ansible.builtin.hostname:
         name: "{{ inventory_hostname }}"
       notify: Reboot

@@ -9,8 +9,8 @@ This playbook is used to apply a baseline to all hosts in the lab environment. U
 #### Baselining a host
 Firstly, run the playbook against the host using a sudoer user, example:
 ```bash
-ansible-playbook ./baseline.yaml -i "<new_hostname> ansible_host=<current_hostname> ansible_connection=ssh ansible_user=<user> ansible_password=<password>"
+ansible-playbook ./baseline.yaml -i "<new_hostname>," --extra-vars "ansible_host=<current_hostname> ansible_connection=ssh ansible_user=<user> ansible_password=<password>"
 ```
-If variable overrides are required, use the `--extra-vars`.
+If other variable overrides are required, use the `--extra-vars`.
 
 After the playbook has run, the host will be baselined. The next step, if the host is bare metal; is to add the host to the static inventory file `inventory/static.yaml`.
