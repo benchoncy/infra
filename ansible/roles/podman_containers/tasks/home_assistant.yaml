@@ -5,24 +5,27 @@
     state: directory
     path: "{{ podman_volume_root }}/home-assistant/"
     mode: '0755'
-    owner: "{{ ansible_user }}"
+    owner: "{{ podman_user }}"
+    group: "{{ podman_group }}"
   register: home_assistant_volume
 
 - name: Create home assistant quadlet
+  become: true
+  become_user: "{{ podman_user }}"
   containers.podman.podman_container:
     name: home-assistant
     image: ghcr.io/home-assistant/home-assistant:{{ home_assistant_version }}
     state: quadlet
     privileged: true
     group_add:
-      - keep-groups
+      - keep-groups # required to keep the dialout group for Zigbee device access
     quadlet_options:
       - |
         [Service]
         Restart=always
       - |
         [Install]
-        WantedBy=multi-user.target
+        WantedBy=default.target
     device: "{{ home_assistant_zigbee_device }}:{{ home_assistant_zigbee_device }}:rwm" # For Zigbee
     volumes:
       - "{{ home_assistant_volume.path }}:/config:Z"
@@ -35,6 +38,8 @@
   notify: Restart home-assistant
 
 - name: Enable home assistant service
+  become: true
+  become_user: "{{ podman_user }}"
   ansible.builtin.systemd:
     name: home-assistant
     state: started

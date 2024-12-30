@@ -2,6 +2,7 @@
 all:
   hosts:
     dalaran:
+      node_exporter_arch: arm64
 
 immutable:
   hosts:
@@ -12,3 +13,4 @@ podman:
     dalaran:
       podman_containers:
         - home_assistant
+        - grafana_alloy

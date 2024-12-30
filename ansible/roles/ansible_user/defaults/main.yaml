@@ -1,2 +1,2 @@
 ---
-ansible_user_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDL6U4FsByG8wFNC+0davE2v3p3TwQSh7wfkjMf6hijW"
+ansible_user_ssh_item: "Lab Provisioner SSH Key" # 1password item name

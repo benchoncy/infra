@@ -7,11 +7,4 @@ See the [docs](docs/) for detailed information on the infrastructure.
 ---
 
 ## Why?
-As my homelab/home infrastucre and cloud footprint grows, I want a convenent place to managed all the code and configuration for it. This repository is that place.
-
-## Overview
-### Infrastructure
-#### Home
-| Hostname | IP Address | OS | Services |
-| --- | --- | --- | --- |
-| `stargate` | dynamic | raspberrypi os | None |
+As my homelab/home infrastructure and cloud footprint grows, I want a convenent place to managed all the code and configuration for it. This repository is that place.

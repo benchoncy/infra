@@ -1,0 +1,33 @@
+---
+- name: Get podman version
+  ansible.builtin.command:
+    cmd: podman --version
+  register: podman_version
+  changed_when: false
+
+- name: Will podman be upgraded?
+  ansible.builtin.set_fact:
+    podman_upgrade: "{{ (podman_version.stdout | split(' '))[2] is version(podman_min_version, '<=') }}"
+
+- name: Upgrade Podman if necessary
+  become: true
+  ansible.builtin.command:
+    cmd: rpm-ostree upgrade podman
+  changed_when: podman_upgrade
+  when: podman_upgrade
+  notify: Reboot
+
+# Checking this way is faster than using the rpm_ostree_pkg module
+- name: Check if machinectl is installed
+  ansible.builtin.command:
+    cmd: machinectl --version
+  register: machinectl_version
+  changed_when: false
+
+- name: Ensure machinectl is available
+  become: true
+  community.general.rpm_ostree_pkg:
+    name: systemd-container
+    state: present
+  when: machinectl_version.rc != 0
+  notify: Reboot

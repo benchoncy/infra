@@ -1,0 +1,48 @@
+---
+- name: Provision space for grafana alloy
+  become: true
+  ansible.builtin.file:
+    state: directory
+    path: "{{ podman_volume_root }}/grafana-alloy/"
+    mode: '0755'
+    owner: "{{ podman_user }}"
+    group: "{{ podman_group }}"
+  register: grafana_alloy_volume
+
+- name: Template grafana alloy config
+  become: true
+  ansible.builtin.template:
+    src: templates/grafana_alloy/config.alloy.j2
+    dest: "{{ grafana_alloy_volume.path }}/config.alloy"
+    mode: '0644'
+    owner: "{{ podman_user }}"
+    group: "{{ podman_group }}"
+
+- name: Create grafana alloy quadlet
+  become: true
+  become_user: "{{ podman_user }}"
+  containers.podman.podman_container:
+    name: grafana-alloy
+    image: "docker.io/grafana/alloy:{{ grafana_alloy_version }}"
+    state: quadlet
+    quadlet_options:
+      - |
+        [Service]
+        Restart=always
+      - |
+        [Install]
+        WantedBy=default.target
+    volumes:
+      - "{{ grafana_alloy_volume.path }}/config.alloy:/etc/alloy/config.alloy:Z"
+    command: run --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+  notify: Restart grafana-alloy
+
+- name: Enable grafana alloy service
+  become: true
+  become_user: "{{ podman_user }}"
+  ansible.builtin.systemd:
+    name: grafana-alloy
+    state: started
+    enabled: true
+    daemon_reload: true
+    scope: user

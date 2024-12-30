@@ -26,17 +26,21 @@
         security_autoupdate_enabled: false
       notify: Reboot
 
-    - name: Install node exporter (immutable)
-      ansible.builtin.import_role: 
-        name: podman_containers
-        tasks_from: node_exporter.yaml
-      when: inventory_hostname in groups['immutable']
-
-    - name: Install node exporter (mutable)
+    - name: Install node exporter
       become: true
       ansible.builtin.import_role: 
         name: geerlingguy.node_exporter
-      when: inventory_hostname not in groups['immutable']
+
+    - name: Ensure SSH and Node Exporter port are open
+      become: true
+      ansible.posix.firewalld:
+        port: "{{ item }}"
+        permanent: true
+        immediate: true
+        state: enabled
+      with_items:
+        - 22/tcp
+        - 9100/tcp
 
     - name: Set timezone to Europe/Dublin
       become: true

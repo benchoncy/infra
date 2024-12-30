@@ -1,0 +1,58 @@
+logging {
+    level  = "info"
+    format = "logfmt"
+}
+
+# Metrics
+prometheus.exporter.unix "local_system" { }
+
+prometheus.scrape "scrape_metrics" {
+    targets         = prometheus.exporter.unix.local_system.targets
+    forward_to      = [prometheus.relabel.filter_metrics.receiver]
+    scrape_interval = "30s"
+}
+
+prometheus.relabel "filter_metrics" {
+    forward_to = [prometheus.remote_write.grafanacloud.receiver]
+}
+
+prometheus.remote_write "grafanacloud" {
+    endpoint {
+        url = "{{ lookup('community.general.onepassword', 'Grafana Cloud Stack', section='Prometheus', field='Write Endpoint', vault='Automation') }}"
+
+        basic_auth {
+            username = "{{ lookup('community.general.onepassword', 'Grafana Cloud Stack', section='Prometheus', field='User ID', vault='Automation') }}"
+            password = "{{ lookup('community.general.onepassword', 'Grafana Cloud Stack', section='Prometheus', field='Token', vault='Automation') }}"
+        }
+    }
+}
+
+# Logs
+loki.source.journal "read" {
+    relabel_rules = loki.relabel.journal.rules
+    forward_to    = [loki.process.filter_logs.receiver]
+}
+
+loki.relabel "journal" {
+    forward_to = []
+
+    rule {
+        source_labels = ["__journal__systemd_unit"]
+        target_label  = "unit"
+    }
+}
+
+loki.process "filter_logs" {
+    forward_to = [loki.write.grafanacloud.receiver]
+}
+
+loki.write "grafanacloud" {
+  endpoint {
+    url = "{{ lookup('community.general.onepassword', 'Grafana Cloud Stack', section='Loki', field='Write Endpoint', vault='Automation') }}"
+
+    basic_auth {
+      username = "{{ lookup('community.general.onepassword', 'Grafana Cloud Stack', section='Loki', field='User ID', vault='Automation') }}"
+      password = "{{ lookup('community.general.onepassword', 'Grafana Cloud Stack', section='Loki', field='Token', vault='Automation') }}"
+    }
+  }
+}

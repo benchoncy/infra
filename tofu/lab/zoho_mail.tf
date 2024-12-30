@@ -1,5 +1,5 @@
 resource "cloudflare_record" "zoho_spf" {
-  zone_id = module.cloud_bootstrap.cf_zone_id
+  zone_id = data.cloudflare_zone.domain.id
   name    = "@"
   type    = "TXT"
   ttl     = 3600
@@ -8,7 +8,7 @@ resource "cloudflare_record" "zoho_spf" {
 }
 
 resource "cloudflare_record" "zoho_dmarc" {
-  zone_id = module.cloud_bootstrap.cf_zone_id
+  zone_id = data.cloudflare_zone.domain.id
   name    = "_dmarc.benstuart.ie"
   type    = "TXT"
   ttl     = 3600
@@ -17,7 +17,7 @@ resource "cloudflare_record" "zoho_dmarc" {
 }
 
 resource "cloudflare_record" "zoho_dkim" {
-  zone_id = module.cloud_bootstrap.cf_zone_id
+  zone_id = data.cloudflare_zone.domain.id
   name    = "benstuart._domainkey.benstuart.ie"
   type    = "TXT"
   ttl     = 3600
@@ -26,7 +26,7 @@ resource "cloudflare_record" "zoho_dkim" {
 }
 
 resource "cloudflare_record" "zoho_mx1" {
-  zone_id  = module.cloud_bootstrap.cf_zone_id
+  zone_id  = data.cloudflare_zone.domain.id
   name     = "@"
   type     = "MX"
   ttl      = 14400
@@ -36,7 +36,7 @@ resource "cloudflare_record" "zoho_mx1" {
 }
 
 resource "cloudflare_record" "zoho_mx2" {
-  zone_id  = module.cloud_bootstrap.cf_zone_id
+  zone_id  = data.cloudflare_zone.domain.id
   name     = "@"
   type     = "MX"
   ttl      = 14400
@@ -46,7 +46,7 @@ resource "cloudflare_record" "zoho_mx2" {
 }
 
 resource "cloudflare_record" "zoho_mx3" {
-  zone_id  = module.cloud_bootstrap.cf_zone_id
+  zone_id  = data.cloudflare_zone.domain.id
   name     = "@"
   type     = "MX"
   ttl      = 14400

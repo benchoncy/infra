@@ -31,7 +31,7 @@
 - name: Ensure ansible user has authorized_keys file
   ansible.builtin.copy:
     dest: /home/ansible/.ssh/authorized_keys
-    content: "{{ ansible_user_public_key }}"
+    content: "{{ lookup('community.general.onepassword', ansible_user_ssh_item, field='public key') }}"
     owner: ansible
     group: ansible
     mode: "0600"
