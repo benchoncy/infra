@@ -3,11 +3,10 @@ logging {
     format = "logfmt"
 }
 
-# Metrics
-prometheus.exporter.unix "local_system" { }
-
 prometheus.scrape "scrape_metrics" {
-    targets         = prometheus.exporter.unix.local_system.targets
+    targets         = [
+        {"__address__" = "127.0.0.1:9100", "instance" = "{{ ansible_hostname }}"},
+    ]
     forward_to      = [prometheus.relabel.filter_metrics.receiver]
     scrape_interval = "30s"
 }
@@ -27,8 +26,8 @@ prometheus.remote_write "grafanacloud" {
     }
 }
 
-# Logs
 loki.source.journal "read" {
+    path          = "/var/log/journal"
     relabel_rules = loki.relabel.journal.rules
     forward_to    = [loki.process.filter_logs.receiver]
 }

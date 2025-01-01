@@ -2,11 +2,8 @@
 all:
   hosts:
     dalaran:
+      ansible_host: 192.168.0.40
       node_exporter_arch: arm64
-
-immutable:
-  hosts:
-    dalaran:
 
 podman:
   hosts:

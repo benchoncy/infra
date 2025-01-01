@@ -6,6 +6,7 @@
     - name: Setup podman for quadlets
       ansible.builtin.import_role:
         name: podman_quadlet_host
+      tags: podman
 
   tasks:
     - name: Manage containers

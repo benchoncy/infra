@@ -35,6 +35,8 @@
     groups:
       - "{{ podman_group }}"
       - dialout # Required to access devices
+      - adm # Required to access logs
+      - systemd-journal # Required to access logs
     append: true
 
   # Lingering is required to keep the user running podman containers after logout

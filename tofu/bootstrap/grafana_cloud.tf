@@ -103,5 +103,22 @@ resource "onepassword_item" "grafana_service_account" {
     }
   }
 
+  section {
+    label = "Loki"
+    field {
+      label = "Write Endpoint"
+      value = "${grafana_cloud_stack.main.logs_url}/loki/api/v1/push"
+    }
+    field {
+      label = "User ID"
+      value = grafana_cloud_stack.main.logs_user_id
+    }
+    field {
+      label = "Token"
+      value = grafana_cloud_access_policy_token.write.token
+      type  = "CONCEALED"
+    }
+  }
+
   tags = ["ManagedBy:OpenTofu"]
 }

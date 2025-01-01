@@ -17,6 +17,7 @@
     mode: '0644'
     owner: "{{ podman_user }}"
     group: "{{ podman_group }}"
+  notify: Restart grafana-alloy
 
 - name: Create grafana alloy quadlet
   become: true
@@ -25,6 +26,9 @@
     name: grafana-alloy
     image: "docker.io/grafana/alloy:{{ grafana_alloy_version }}"
     state: quadlet
+    privileged: true
+    group_add:
+      - keep-groups # required to access logs
     quadlet_options:
       - |
         [Service]
@@ -32,9 +36,13 @@
       - |
         [Install]
         WantedBy=default.target
+    ports:
+      - 12345:12345
+    network: host
     volumes:
+      - /var/log/journal:/var/log/journal
       - "{{ grafana_alloy_volume.path }}/config.alloy:/etc/alloy/config.alloy:Z"
-    command: run --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+    command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
   notify: Restart grafana-alloy
 
 - name: Enable grafana alloy service
@@ -46,3 +54,11 @@
     enabled: true
     daemon_reload: true
     scope: user
+
+- name: Allow grafana alloy through firewall
+  become: true
+  ansible.posix.firewalld:
+    port: 12345/tcp
+    permanent: true
+    immediate: true
+    state: enabled
