@@ -2458,8 +2458,8 @@
     "list": [
       {
         "current": {
-          "text": "default",
-          "value": "default"
+          "text": "grafanacloud-bstuart-prom",
+          "value": "grafanacloud-prom"
         },
         "includeAll": false,
         "label": "Datasource",
@@ -2479,14 +2479,15 @@
           "type": "prometheus",
           "uid": "${datasource}"
         },
-        "definition": "",
+        "definition": "label_values(node_os_info,job)",
         "includeAll": false,
         "label": "Job",
         "name": "job",
         "options": [],
         "query": {
-          "query": "label_values(node_uname_info, job)",
-          "refId": "Prometheus-job-Variable-Query"
+          "qryType": 1,
+          "query": "label_values(node_os_info,job)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
         "regex": "",
@@ -2502,14 +2503,15 @@
           "type": "prometheus",
           "uid": "${datasource}"
         },
-        "definition": "label_values(node_uname_info{job=\"$job\"}, instance)",
+        "definition": "label_values(node_os_info{job=\"$job\"},instance)",
         "includeAll": false,
         "label": "Host",
         "name": "node",
         "options": [],
         "query": {
-          "query": "label_values(node_uname_info{job=\"$job\"}, instance)",
-          "refId": "Prometheus-node-Variable-Query"
+          "qryType": 1,
+          "query": "label_values(node_os_info{job=\"$job\"},instance)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
         "regex": "",
@@ -2544,5 +2546,5 @@
   "timezone": "browser",
   "title": "Node Overview",
   "uid": "feftl10srva4ge",
-  "version": 28
+  "version": 31
 }
