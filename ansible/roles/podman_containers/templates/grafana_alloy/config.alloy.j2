@@ -8,7 +8,7 @@ prometheus.scrape "scrape_metrics" {
         {"__address__" = "127.0.0.1:9100", "instance" = "{{ ansible_hostname }}"},
     ]
     forward_to      = [prometheus.relabel.filter_metrics.receiver]
-    scrape_interval = "30s"
+    scrape_interval = "2m"
 }
 
 prometheus.relabel "filter_metrics" {
@@ -26,12 +26,6 @@ prometheus.remote_write "grafanacloud" {
     }
 }
 
-loki.source.journal "read" {
-    path          = "/var/log/journal"
-    relabel_rules = loki.relabel.journal.rules
-    forward_to    = [loki.process.filter_logs.receiver]
-}
-
 loki.relabel "journal" {
     forward_to = []
 
@@ -39,6 +33,11 @@ loki.relabel "journal" {
         source_labels = ["__journal__systemd_unit"]
         target_label  = "unit"
     }
+}
+
+loki.source.journal "read" {
+    relabel_rules = loki.relabel.journal.rules
+    forward_to    = [loki.process.filter_logs.receiver]
 }
 
 loki.process "filter_logs" {

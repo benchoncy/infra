@@ -2,7 +2,8 @@
 all:
   hosts:
     dalaran:
-      ansible_host: 192.168.0.40
+      ansible_host: dalaran
+      ansible_python_interpreter: /usr/bin/python3
       node_exporter_arch: arm64
 
 podman:

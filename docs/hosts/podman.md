@@ -12,11 +12,19 @@ To access the podman user with access to systemctl/journalctl, use machinectl:
 sudo machinectl shell --uid podman
 ```
 
-Once inside the podman user, you can run systemctl/journalctl commands as you would normally for user services. Example:
+Once inside the podman user, you can run systemctl/journalctl commands as you would normally for user services.
+
+### Checking service status
 ```
 systemctl --user status home-assistant
 ```
-or
+
+### Checking service logs
 ```
 journalctl --user -eu home-assistant
+```
+
+### Restarting a service
+```
+systemctl --user restart home-assistant
 ```

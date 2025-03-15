@@ -30,6 +30,20 @@
       become: true
       ansible.builtin.import_role: 
         name: geerlingguy.node_exporter
+      vars:
+        node_exporter_options: >
+          --collector.disable-defaults
+          --collector.cpu
+          --collector.meminfo
+          --collector.filesystem
+          --collector.netdev
+          --collector.hwmon
+          --collector.stat
+          --collector.os
+          --collector.time
+          --collector.pressure
+          --collector.diskstats
+          --web.disable-exporter-metrics
 
     - name: Ensure SSH and Node Exporter port are open
       become: true

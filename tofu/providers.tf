@@ -56,7 +56,7 @@ provider "aws" {
     tags = {
       Project   = var.project_name
       Purpose   = var.project_description
-      Module    = var.module_name
+      Module    = local.module_name
       Repo      = var.repo_url
       ManagedBy = "OpenTofu"
     }

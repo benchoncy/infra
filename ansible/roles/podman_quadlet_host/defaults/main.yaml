@@ -1,4 +1,8 @@
 ---
 podman_user: podman
-podman_group: podman
+podman_groups: 
+  - podman
+  - dialout # Required to access devices
+  - adm # Required to access logs
+  - systemd-journal # Required to access logs
 podman_min_version: 5.3.0

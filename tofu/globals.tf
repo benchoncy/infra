@@ -1,9 +1,11 @@
 data "onepassword_vault" "automation" {
   name = "Automation"
 }
+
 variable "module_name" {
   type        = string
   description = "Tofo module name, used mostly for seperation of statefiles"
+  default     = ""
 }
 
 variable "project_name" {
