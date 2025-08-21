@@ -1,2 +1,0 @@
----
-ansible_user_ssh_item: "Lab Provisioner SSH Key" # 1password item name

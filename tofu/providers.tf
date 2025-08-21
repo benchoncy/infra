@@ -32,10 +32,6 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "~> 4.0"
     }
-    grafana = {
-      source  = "hashicorp/grafana"
-      version = "3.15.3"
-    }
     digitalocean = {
       source  = "digitalocean/digitalocean"
       version = "~> 2.0"
@@ -65,13 +61,6 @@ provider "aws" {
 
 provider "cloudflare" {
   api_token = data.onepassword_item.cf_creds.password
-}
-
-provider "grafana" {
-  alias = "stack"
-
-  url  = data.onepassword_item.grafana_creds.section[0].field[2].value
-  auth = data.onepassword_item.grafana_creds.password
 }
 
 provider "digitalocean" {

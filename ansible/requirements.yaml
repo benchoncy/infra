@@ -1,8 +1,0 @@
----
-roles:
-  - name: geerlingguy.security
-  - name: geerlingguy.node_exporter
-
-collections:
-  - name: community.general
-  - name: containers.podman

@@ -1,9 +1,0 @@
----
-- name: Upgrade or install packages
-  ansible.builtin.import_tasks:
-    file: packages.yaml
-
-- name: Provision user
-  ansible.builtin.import_tasks:
-    file: user.yaml
-  tags: user
