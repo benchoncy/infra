@@ -8,14 +8,14 @@ data "onepassword_item" "cf_creds" {
   title = "Cloudflare Automation Token"
 }
 
-data "onepassword_item" "grafana_creds" {
-  vault = data.onepassword_vault.automation.uuid
-  title = "Grafana Cloud Stack"
-}
-
 data "onepassword_item" "do_creds" {
   vault = data.onepassword_vault.automation.uuid
   title = "Digital Ocean API Key"
+}
+
+data "onepassword_item" "proxmox_creds" {
+  vault = data.onepassword_vault.automation.uuid
+  title = "Proxmox"
 }
 
 terraform {
@@ -35,6 +35,10 @@ terraform {
     digitalocean = {
       source  = "digitalocean/digitalocean"
       version = "~> 2.0"
+    }
+    proxmox = {
+      source  = "bpg/proxmox"
+      version = "0.82.1"
     }
   }
 }
@@ -65,4 +69,11 @@ provider "cloudflare" {
 
 provider "digitalocean" {
   token = data.onepassword_item.do_creds.credential
+}
+
+provider "proxmox" {
+  endpoint = "https://192.168.1.180:8006/"
+  username = "${data.onepassword_item.proxmox_creds.username}@pam"
+  password = data.onepassword_item.proxmox_creds.password
+  insecure = true
 }
